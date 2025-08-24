@@ -1,0 +1,2847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLMBE Course Rankings - Recent Data</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+            color: #2F4F4F;
+            line-height: 1.6;
+            font-size: 14px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            border: 3px solid #8B4513;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(139, 69, 19, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            color: #FFF;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #FFF;
+            opacity: 0.9;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #8B4513;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 16px rgba(139, 69, 19, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 3px solid #FF6B35;
+            padding-bottom: 10px;
+            color: #8B4513;
+        }
+
+        .flmbe-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .bucket-overview {
+            background: linear-gradient(135deg, #FFE4B5 0%, #F5DEB3 100%);
+            border: 2px solid #D2691E;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(210, 105, 30, 0.2);
+        }
+
+        .bucket-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            color: #8B4513;
+            text-align: center;
+            padding: 8px;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .course-list {
+            list-style: none;
+        }
+
+        .course-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #D2691E;
+            color: #2F4F4F;
+            font-weight: 500;
+        }
+
+        .course-list li:last-child {
+            border-bottom: none;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .rankings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            min-width: 800px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .rankings-table th {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: 1px solid #D2691E;
+        }
+
+        .rankings-table td {
+            padding: 12px 10px;
+            border: 1px solid #D2691E;
+            vertical-align: top;
+            color: #2F4F4F;
+        }
+
+        .rankings-table tr:nth-child(even) {
+            background: #FFF8DC;
+        }
+
+        .rankings-table tr:hover {
+            background: #FFE4B5;
+        }
+
+        .rank {
+            font-weight: bold;
+            color: #FF6B35;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .course-title {
+            font-weight: bold;
+            color: #8B4513;
+        }
+
+        .course-id {
+            color: #D2691E;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .course-instructor {
+            color: #2F4F4F;
+            font-size: 0.9rem;
+        }
+
+        .course-term {
+            color: #D2691E;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            font-size: 0.8rem;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 2px;
+            background: #111;
+            border: 1px solid #333;
+        }
+
+        .metric-label {
+            color: #888;
+            font-size: 0.7rem;
+        }
+
+        .metric-value {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .composite-score {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border-radius: 5px;
+        }
+
+        .love-header {
+            background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #B8860B 100%);
+            border: 4px solid #8B4513;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 12px 24px rgba(139, 69, 19, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .love-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="40" fill="rgba(255,255,255,0.4)">❤</text></svg>') repeat;
+            opacity: 0.6;
+        }
+
+        .love-text {
+            font-family: 'Brush Script MT', 'Lucida Handwriting', cursive;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #8B4513;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 2px;
+        }
+
+        .love-subtitle {
+            font-family: 'Georgia', serif;
+            font-size: 1.1rem;
+            color: #8B4513;
+            margin-top: 10px;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            border: 3px solid #8B4513;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 30px;
+            color: white;
+            box-shadow: 0 8px 16px rgba(139, 69, 19, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .main-content {
+                padding: 15px;
+            }
+            
+            .flmbe-overview {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .bucket-overview {
+                padding: 15px;
+            }
+            
+            .rankings-table {
+                font-size: 10px;
+                overflow-x: auto;
+                display: block;
+            }
+            
+            .rankings-table th,
+            .rankings-table td {
+                padding: 8px 6px;
+                min-width: 60px;
+            }
+            
+            .rankings-table th:nth-child(2),
+            .rankings-table td:nth-child(2) {
+                min-width: 120px;
+            }
+            
+            .metrics {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 3px;
+            }
+
+            .love-text {
+                font-size: 1.5rem;
+            }
+            
+            .love-header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                margin: 5px;
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .main-content {
+                padding: 10px;
+            }
+            
+            .flmbe-overview {
+                gap: 10px;
+            }
+            
+            .bucket-overview {
+                padding: 10px;
+            }
+            
+            .rankings-table {
+                font-size: 9px;
+            }
+            
+            .rankings-table th,
+            .rankings-table td {
+                padding: 6px 4px;
+                min-width: 50px;
+            }
+            
+            .rankings-table th:nth-child(2),
+            .rankings-table td:nth-child(2) {
+                min-width: 100px;
+            }
+            
+            .love-text {
+                font-size: 1.3rem;
+            }
+            
+            .love-header {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>FLMBE Course Rankings - Recent Data</h1>
+            <p>Based on student evaluations from the most recent 2 years</p>
+        </div>
+        
+        <!-- Love Declaration Header -->
+        <div class="love-header">
+            <p class="love-text">By using this you acknowledge you LOVE Arman Tajback</p>
+            <p class="love-subtitle">With deepest affection and eternal devotion</p>
+        </div>
+        
+        <!-- FLMBE Course Overview Section -->
+        <div class="section">
+            <h2 class="section-title">📚 FLMBE Course Categories & Available Courses</h2>
+            <div class="flmbe-overview">
+
+                <div class="bucket-overview">
+                    <div class="bucket-title">Finance</div>
+                    <ul class="course-list">
+
+                        <li>Entrepreneurial Finance and Private Equity</li>
+
+                        <li>Asset Pricing I</li>
+
+                        <li>Investments</li>
+
+                        <li>Corporate Finance I</li>
+
+                        <li>Corporation Finance</li>
+
+                        <li>Cases in Financial Management</li>
+
+                        <li>Corporate Finance II</li>
+
+                        <li>Asset Pricing II</li>
+
+                        <li>Portfolio Management</li>
+
+                        <li>Advanced Investments</li>
+
+                        <li>Fixed Income Asset Pricing</li>
+
+                        <li>Debt, Distress, and Restructuring</li>
+
+                        <li>International Corporate Finance</li>
+
+                    </ul>
+                </div>
+
+                <div class="bucket-overview">
+                    <div class="bucket-title">Marketing</div>
+                    <ul class="course-list">
+
+                        <li>Marketing Strategy</li>
+
+                        <li>Marketing Strategy (with Sustainability Simulation)</li>
+
+                        <li>Digital Marketing</li>
+
+                        <li>Data Science for Marketing Decision Making</li>
+
+                        <li>Consumer Behavior</li>
+
+                        <li>Digital Marketing Lab</li>
+
+                        <li>Lab in Developing New Products and Services</li>
+
+                        <li>New Products and Services</li>
+
+                        <li>Pricing Strategies</li>
+
+                        <li>Brand Management in a Digital Age</li>
+
+                        <li>Data-Driven Marketing</li>
+
+                        <li>Experimental Marketing</li>
+
+                    </ul>
+                </div>
+
+                <div class="bucket-overview">
+                    <div class="bucket-title">Operations</div>
+                    <ul class="course-list">
+
+                        <li>Supply Chain Strategy and Practice</li>
+
+                        <li>Managing Service Operations</li>
+
+                        <li>Operations Management: Business Process Fundamentals</li>
+
+                        <li>Revenue Management</li>
+
+                    </ul>
+                </div>
+
+                <div class="bucket-overview">
+                    <div class="bucket-title">Decisions</div>
+                    <ul class="course-list">
+
+                        <li>Managerial Decision Modeling</li>
+
+                        <li>The Study of Behavioral Economics</li>
+
+                        <li>Internal Information for Strategic Decisions</li>
+
+                        <li>Advanced Decision Models with Python</li>
+
+                        <li>Managerial Decision Making</li>
+
+                    </ul>
+                </div>
+
+                <div class="bucket-overview">
+                    <div class="bucket-title">People</div>
+                    <ul class="course-list">
+
+                        <li>Leadership Studio</li>
+
+                        <li>Managing in Organizations</li>
+
+                        <li>Managing the Workplace</li>
+
+                        <li>Power and Influence in Organizations</li>
+
+                        <li>Diversity in Organizations</li>
+
+                    </ul>
+                </div>
+
+                <div class="bucket-overview">
+                    <div class="bucket-title">Strategy</div>
+                    <ul class="course-list">
+
+                        <li>Platforms and Market Design</li>
+
+                        <li>Competitive Strategy</li>
+
+                        <li>Technology Strategy</li>
+
+                        <li>Strategy Simulation: Creating Value in Complex and Ambiguous Settings</li>
+
+                        <li>Strategy and Structure: Markets and Organizations</li>
+
+                        <li>Game Theory</li>
+
+                    </ul>
+                </div>
+
+                <div class="bucket-overview">
+                    <div class="bucket-title">Economy</div>
+                    <ul class="course-list">
+
+                        <li>Macroeconomics and the Business Environment</li>
+
+                        <li>Money and Banking</li>
+
+                        <li>Business in Historical Perspective</li>
+
+                        <li>International Commercial Policy</li>
+
+                        <li>International Financial Policy</li>
+
+                        <li>The Wealth of Nations</li>
+
+                        <li>Managing the Firm in the Global Economy</li>
+
+                    </ul>
+                </div>
+
+                <div class="bucket-overview">
+                    <div class="bucket-title">Society</div>
+                    <ul class="course-list">
+
+                        <li>Social Entrepreneurship and Innovation</li>
+
+                        <li>Culture (And Why It Matters)</li>
+
+                        <li>The Legal Infrastructure of Business</li>
+
+                        <li>Business with Purpose</li>
+
+                        <li>Business, Politics, and Ethics</li>
+
+                        <li>Designing a Good Life</li>
+
+                        <li>Perspectives on Capitalism</li>
+
+                        <li>The Firm and the Non-Market Environment</li>
+
+                        <li>Impact Investing</li>
+
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🏆 Finance Top 15 Rankings</h2>
+            <div class="table-wrapper">
+                <table class="rankings-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Course Title</th>
+                        <th>Course ID</th>
+                        <th>Instructor</th>
+                        <th>Term</th>
+                        <th>Overall</th>
+                        <th>Recommend</th>
+                        <th>Clarity</th>
+                        <th>Interest</th>
+                        <th>Useful</th>
+                        <th>Hours</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="rank">1</td>
+                        <td>
+                            <div class="course-title">Corporate Finance I</div>
+                        </td>
+                        <td class="course-id">35070 50</td>
+                        <td class="course-instructor">Douglas W Diamond</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">17.5</td>
+                        <td class="composite-score">5.00</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">2</td>
+                        <td>
+                            <div class="course-title">Corporate Finance II</div>
+                        </td>
+                        <td class="course-id">34904 50</td>
+                        <td class="course-instructor">Amir Sufi</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">10.0</td>
+                        <td class="composite-score">5.00</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">3</td>
+                        <td>
+                            <div class="course-title">Corporate Finance II</div>
+                        </td>
+                        <td class="course-id">35080 50</td>
+                        <td class="course-instructor">Amir Sufi</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">12.7</td>
+                        <td class="composite-score">5.00</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">4</td>
+                        <td>
+                            <div class="course-title">Corporation Finance</div>
+                        </td>
+                        <td class="course-id">35200 01</td>
+                        <td class="course-instructor">Pascal Noel</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.0</td>
+                        <td class="composite-score">4.96</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">5</td>
+                        <td>
+                            <div class="course-title">Cases in Financial Management</div>
+                        </td>
+                        <td class="course-id">35201 01</td>
+                        <td class="course-instructor">Laura Born</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.9</td>
+                        <td class="composite-score">4.90</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">6</td>
+                        <td>
+                            <div class="course-title">Debt, Distress, and Restructuring</div>
+                        </td>
+                        <td class="course-id">35214 01</td>
+                        <td class="course-instructor">Amir Sufi</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.89</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">7</td>
+                        <td>
+                            <div class="course-title">Corporation Finance</div>
+                        </td>
+                        <td class="course-id">35200 01</td>
+                        <td class="course-instructor">Pascal Noel</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.0</td>
+                        <td class="composite-score">4.85</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">8</td>
+                        <td>
+                            <div class="course-title">Portfolio Management</div>
+                        </td>
+                        <td class="course-id">35120 01</td>
+                        <td class="course-instructor">Lubos Pastor</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">5.8</td>
+                        <td class="composite-score">4.84</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">9</td>
+                        <td>
+                            <div class="course-title">Cases in Financial Management</div>
+                        </td>
+                        <td class="course-id">35201 81</td>
+                        <td class="course-instructor">Laura Born</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">6.5</td>
+                        <td class="composite-score">4.83</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">10</td>
+                        <td>
+                            <div class="course-title">Cases in Financial Management</div>
+                        </td>
+                        <td class="course-id">35201 01</td>
+                        <td class="course-instructor">Laura Born</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">6.4</td>
+                        <td class="composite-score">4.83</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">11</td>
+                        <td>
+                            <div class="course-title">Debt, Distress, and Restructuring</div>
+                        </td>
+                        <td class="course-id">35214 81</td>
+                        <td class="course-instructor">Amir Sufi</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.1</td>
+                        <td class="composite-score">4.83</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">12</td>
+                        <td>
+                            <div class="course-title">Cases in Financial Management</div>
+                        </td>
+                        <td class="course-id">35201 01</td>
+                        <td class="course-instructor">Laura Born</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">5.4</td>
+                        <td class="composite-score">4.82</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">13</td>
+                        <td>
+                            <div class="course-title">Entrepreneurial Finance and Private Equity</div>
+                        </td>
+                        <td class="course-id">34101 85</td>
+                        <td class="course-instructor">Scott F Meadow</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">11.3</td>
+                        <td class="composite-score">4.80</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">14</td>
+                        <td>
+                            <div class="course-title">Portfolio Management</div>
+                        </td>
+                        <td class="course-id">35120 02</td>
+                        <td class="course-instructor">Lubos Pastor</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.7</td>
+                        <td class="composite-score">4.78</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">15</td>
+                        <td>
+                            <div class="course-title">Corporation Finance</div>
+                        </td>
+                        <td class="course-id">35200 03</td>
+                        <td class="course-instructor">Pascal Noel</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.7</td>
+                        <td class="composite-score">4.76</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🏆 Marketing Top 15 Rankings</h2>
+            <div class="table-wrapper">
+                <table class="rankings-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Course Title</th>
+                        <th>Course ID</th>
+                        <th>Instructor</th>
+                        <th>Term</th>
+                        <th>Overall</th>
+                        <th>Recommend</th>
+                        <th>Clarity</th>
+                        <th>Interest</th>
+                        <th>Useful</th>
+                        <th>Hours</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="rank">1</td>
+                        <td>
+                            <div class="course-title">Data-Driven Marketing</div>
+                        </td>
+                        <td class="course-id">37103 81</td>
+                        <td class="course-instructor">Guenter Hitsch</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.1</td>
+                        <td class="composite-score">4.93</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">2</td>
+                        <td>
+                            <div class="course-title">Marketing Strategy</div>
+                        </td>
+                        <td class="course-id">37000 85</td>
+                        <td class="course-instructor">Christopher Krohn</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.4</td>
+                        <td class="composite-score">4.91</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">3</td>
+                        <td>
+                            <div class="course-title">Consumer Behavior</div>
+                        </td>
+                        <td class="course-id">37101 81</td>
+                        <td class="course-instructor">Daniel Bartels</td>
+                        <td class="course-term">Summer 2024</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">3.5</td>
+                        <td class="composite-score">4.89</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">4</td>
+                        <td>
+                            <div class="course-title">Marketing Strategy (with Sustainability Simulation)</div>
+                        </td>
+                        <td class="course-id">37110 01</td>
+                        <td class="course-instructor">Pradeep Chintagunta</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8</td>
+                        <td class="composite-score">4.83</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">5</td>
+                        <td>
+                            <div class="course-title">Marketing Strategy</div>
+                        </td>
+                        <td class="course-id">37000 85</td>
+                        <td class="course-instructor">Christopher Krohn</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">5.7</td>
+                        <td class="composite-score">4.77</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">6</td>
+                        <td>
+                            <div class="course-title">Pricing Strategies</div>
+                        </td>
+                        <td class="course-id">37202 81</td>
+                        <td class="course-instructor">Jean-Pierre Dube</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">6.6</td>
+                        <td class="composite-score">4.74</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">7</td>
+                        <td>
+                            <div class="course-title">Brand Management in a Digital Age</div>
+                        </td>
+                        <td class="course-id">37209 85</td>
+                        <td class="course-instructor">Thomas Hafen</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.68</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">8</td>
+                        <td>
+                            <div class="course-title">Marketing Strategy (with Sustainability Simulation)</div>
+                        </td>
+                        <td class="course-id">37110 01</td>
+                        <td class="course-instructor">Pradeep Chintagunta</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">3.5</td>
+                        <td class="composite-score">4.67</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">9</td>
+                        <td>
+                            <div class="course-title">Marketing Strategy</div>
+                        </td>
+                        <td class="course-id">37000 03</td>
+                        <td class="course-instructor">Christopher Krohn</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">6.0</td>
+                        <td class="composite-score">4.65</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">10</td>
+                        <td>
+                            <div class="course-title">Pricing Strategies</div>
+                        </td>
+                        <td class="course-id">37202 81</td>
+                        <td class="course-instructor">Jean-Pierre Dube</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">9.0</td>
+                        <td class="composite-score">4.64</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">11</td>
+                        <td>
+                            <div class="course-title">Lab in Developing New Products and Services</div>
+                        </td>
+                        <td class="course-id">37201 81</td>
+                        <td class="course-instructor">Arthur Middlebrooks</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">8.8</td>
+                        <td class="composite-score">4.61</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">12</td>
+                        <td>
+                            <div class="course-title">Pricing Strategies</div>
+                        </td>
+                        <td class="course-id">37202 01</td>
+                        <td class="course-instructor">Jean-Pierre Dube</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">5.2</td>
+                        <td class="composite-score">4.58</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">13</td>
+                        <td>
+                            <div class="course-title">Consumer Behavior</div>
+                        </td>
+                        <td class="course-id">37101 01</td>
+                        <td class="course-instructor">Daniel Bartels</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">2.8</td>
+                        <td class="composite-score">4.58</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">14</td>
+                        <td>
+                            <div class="course-title">New Products and Services</div>
+                        </td>
+                        <td class="course-id">37200 85</td>
+                        <td class="course-instructor">Craig Terrill</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">5.2</td>
+                        <td class="composite-score">4.58</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">15</td>
+                        <td>
+                            <div class="course-title">Brand Management in a Digital Age</div>
+                        </td>
+                        <td class="course-id">37209 01</td>
+                        <td class="course-instructor">Thomas Hafen</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">3.0</td>
+                        <td class="composite-score">4.55</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🏆 Operations Top 15 Rankings</h2>
+            <div class="table-wrapper">
+                <table class="rankings-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Course Title</th>
+                        <th>Course ID</th>
+                        <th>Instructor</th>
+                        <th>Term</th>
+                        <th>Overall</th>
+                        <th>Recommend</th>
+                        <th>Clarity</th>
+                        <th>Interest</th>
+                        <th>Useful</th>
+                        <th>Hours</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="rank">1</td>
+                        <td>
+                            <div class="course-title">Operations Management: Business Process Fundamentals</div>
+                        </td>
+                        <td class="course-id">40000 81</td>
+                        <td class="course-instructor">Sergio Chayet</td>
+                        <td class="course-term">Summer 2024</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.6</td>
+                        <td class="composite-score">4.79</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">2</td>
+                        <td>
+                            <div class="course-title">Operations Management: Business Process Fundamentals</div>
+                        </td>
+                        <td class="course-id">40000 85</td>
+                        <td class="course-instructor">Sergio Chayet</td>
+                        <td class="course-term">Summer 2024</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.9</td>
+                        <td class="composite-score">4.74</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">3</td>
+                        <td>
+                            <div class="course-title">Operations Management: Business Process Fundamentals</div>
+                        </td>
+                        <td class="course-id">40000 85</td>
+                        <td class="course-instructor">Linwei Xin</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">3.7</td>
+                        <td class="composite-score">4.70</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">4</td>
+                        <td>
+                            <div class="course-title">Operations Management: Business Process Fundamentals</div>
+                        </td>
+                        <td class="course-id">40000 85</td>
+                        <td class="course-instructor">Linwei Xin</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.0</td>
+                        <td class="composite-score">4.66</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">5</td>
+                        <td>
+                            <div class="course-title">Operations Management: Business Process Fundamentals</div>
+                        </td>
+                        <td class="course-id">40000 03</td>
+                        <td class="course-instructor">Ozan Candogan</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">3.1</td>
+                        <td class="composite-score">4.44</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">6</td>
+                        <td>
+                            <div class="course-title">Supply Chain Strategy and Practice</div>
+                        </td>
+                        <td class="course-id">40101 01</td>
+                        <td class="course-instructor">Nicole Dehoratius</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.2</td>
+                        <td class="composite-score">4.44</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">7</td>
+                        <td>
+                            <div class="course-title">Supply Chain Strategy and Practice</div>
+                        </td>
+                        <td class="course-id">40101 81</td>
+                        <td class="course-instructor">Nicole Dehoratius</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">3.9</td>
+                        <td class="composite-score">4.40</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">8</td>
+                        <td>
+                            <div class="course-title">Operations Management: Business Process Fundamentals</div>
+                        </td>
+                        <td class="course-id">40000 81</td>
+                        <td class="course-instructor">Yuan Zhong</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.3</td>
+                        <td class="composite-score">4.37</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">9</td>
+                        <td>
+                            <div class="course-title">Supply Chain Strategy and Practice</div>
+                        </td>
+                        <td class="course-id">40101 01</td>
+                        <td class="course-instructor">Levi DeValve</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.1/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">3.9</td>
+                        <td class="composite-score">4.31</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">10</td>
+                        <td>
+                            <div class="course-title">Operations Management: Business Process Fundamentals</div>
+                        </td>
+                        <td class="course-id">40000 01</td>
+                        <td class="course-instructor">Linwei Xin</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.1/5</td>
+                        <td class="metric-value">4.1/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">3.6</td>
+                        <td class="composite-score">4.25</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">11</td>
+                        <td>
+                            <div class="course-title">Supply Chain Strategy and Practice</div>
+                        </td>
+                        <td class="course-id">40101 81</td>
+                        <td class="course-instructor">Levi DeValve</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.0/5</td>
+                        <td class="metric-value">4.1/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.1/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">5.1</td>
+                        <td class="composite-score">4.16</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">12</td>
+                        <td>
+                            <div class="course-title">Managing Service Operations</div>
+                        </td>
+                        <td class="course-id">40110 81</td>
+                        <td class="course-instructor">Amy Ward</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.0/5</td>
+                        <td class="metric-value">4.0/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.1/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">3.9</td>
+                        <td class="composite-score">4.14</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">13</td>
+                        <td>
+                            <div class="course-title">Supply Chain Strategy and Practice</div>
+                        </td>
+                        <td class="course-id">40101 81</td>
+                        <td class="course-instructor">Levi DeValve</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">3.9/5</td>
+                        <td class="metric-value">4.1/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.14</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">14</td>
+                        <td>
+                            <div class="course-title">Revenue Management</div>
+                        </td>
+                        <td class="course-id">40108 81</td>
+                        <td class="course-instructor">Rene Caldentey</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.0/5</td>
+                        <td class="metric-value">4.1/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.0/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">6.9</td>
+                        <td class="composite-score">4.11</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">15</td>
+                        <td>
+                            <div class="course-title">Operations Management: Business Process Fundamentals</div>
+                        </td>
+                        <td class="course-id">40000 02</td>
+                        <td class="course-instructor">Linwei Xin</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.0/5</td>
+                        <td class="metric-value">4.0/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.1/5</td>
+                        <td class="metric-value">3.4</td>
+                        <td class="composite-score">4.08</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🏆 Decisions Top 15 Rankings</h2>
+            <div class="table-wrapper">
+                <table class="rankings-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Course Title</th>
+                        <th>Course ID</th>
+                        <th>Instructor</th>
+                        <th>Term</th>
+                        <th>Overall</th>
+                        <th>Recommend</th>
+                        <th>Clarity</th>
+                        <th>Interest</th>
+                        <th>Useful</th>
+                        <th>Hours</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="rank">1</td>
+                        <td>
+                            <div class="course-title">The Study of Behavioral Economics</div>
+                        </td>
+                        <td class="course-id">38120 81</td>
+                        <td class="course-instructor">Devin Pope</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">2.4</td>
+                        <td class="composite-score">4.88</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">2</td>
+                        <td>
+                            <div class="course-title">The Study of Behavioral Economics</div>
+                        </td>
+                        <td class="course-id">38120 02</td>
+                        <td class="course-instructor">Devin Pope</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">2.6</td>
+                        <td class="composite-score">4.85</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">3</td>
+                        <td>
+                            <div class="course-title">Advanced Decision Models with Python</div>
+                        </td>
+                        <td class="course-id">36109 81</td>
+                        <td class="course-instructor">Donald D Eisenstein</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">3.4</td>
+                        <td class="composite-score">4.84</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">4</td>
+                        <td>
+                            <div class="course-title">The Study of Behavioral Economics</div>
+                        </td>
+                        <td class="course-id">38120 02</td>
+                        <td class="course-instructor">Devin Pope</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">2.7</td>
+                        <td class="composite-score">4.78</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">5</td>
+                        <td>
+                            <div class="course-title">The Study of Behavioral Economics</div>
+                        </td>
+                        <td class="course-id">38120 85</td>
+                        <td class="course-instructor">Devin Pope</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">2.8</td>
+                        <td class="composite-score">4.73</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">6</td>
+                        <td>
+                            <div class="course-title">The Study of Behavioral Economics</div>
+                        </td>
+                        <td class="course-id">38120 01</td>
+                        <td class="course-instructor">Devin Pope</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">2.3</td>
+                        <td class="composite-score">4.72</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">7</td>
+                        <td>
+                            <div class="course-title">The Study of Behavioral Economics</div>
+                        </td>
+                        <td class="course-id">38120 01</td>
+                        <td class="course-instructor">Devin Pope</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">2.5</td>
+                        <td class="composite-score">4.72</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">8</td>
+                        <td>
+                            <div class="course-title">Managerial Decision Modeling</div>
+                        </td>
+                        <td class="course-id">36106 01</td>
+                        <td class="course-instructor">Philipp Afeche</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8</td>
+                        <td class="composite-score">4.71</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">9</td>
+                        <td>
+                            <div class="course-title">Advanced Decision Models with Python</div>
+                        </td>
+                        <td class="course-id">36109 02</td>
+                        <td class="course-instructor">Donald D Eisenstein</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.1</td>
+                        <td class="composite-score">4.70</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">10</td>
+                        <td>
+                            <div class="course-title">Advanced Decision Models with Python</div>
+                        </td>
+                        <td class="course-id">36109 02</td>
+                        <td class="course-instructor">Donald D Eisenstein</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">5.2</td>
+                        <td class="composite-score">4.57</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">11</td>
+                        <td>
+                            <div class="course-title">Internal Information for Strategic Decisions</div>
+                        </td>
+                        <td class="course-id">30005 01</td>
+                        <td class="course-instructor">Anna Costello</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.3</td>
+                        <td class="composite-score">4.55</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">12</td>
+                        <td>
+                            <div class="course-title">Internal Information for Strategic Decisions</div>
+                        </td>
+                        <td class="course-id">30005 02</td>
+                        <td class="course-instructor">Anna Costello</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">3.9</td>
+                        <td class="composite-score">4.55</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">13</td>
+                        <td>
+                            <div class="course-title">Internal Information for Strategic Decisions</div>
+                        </td>
+                        <td class="course-id">30005 81</td>
+                        <td class="course-instructor">Anna Costello</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.6</td>
+                        <td class="composite-score">4.47</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">14</td>
+                        <td>
+                            <div class="course-title">Internal Information for Strategic Decisions</div>
+                        </td>
+                        <td class="course-id">30005 01</td>
+                        <td class="course-instructor">Christopher Stewart</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.5</td>
+                        <td class="composite-score">4.47</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">15</td>
+                        <td>
+                            <div class="course-title">Advanced Decision Models with Python</div>
+                        </td>
+                        <td class="course-id">36109 01</td>
+                        <td class="course-instructor">Donald D Eisenstein</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">5.4</td>
+                        <td class="composite-score">4.42</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🏆 People Top 15 Rankings</h2>
+            <div class="table-wrapper">
+                <table class="rankings-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Course Title</th>
+                        <th>Course ID</th>
+                        <th>Instructor</th>
+                        <th>Term</th>
+                        <th>Overall</th>
+                        <th>Recommend</th>
+                        <th>Clarity</th>
+                        <th>Interest</th>
+                        <th>Useful</th>
+                        <th>Hours</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="rank">1</td>
+                        <td>
+                            <div class="course-title">Leadership Studio</div>
+                        </td>
+                        <td class="course-id">31403 85</td>
+                        <td class="course-instructor">Harry L Davis</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.3</td>
+                        <td class="composite-score">4.92</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">2</td>
+                        <td>
+                            <div class="course-title">Leadership Studio</div>
+                        </td>
+                        <td class="course-id">31403 85</td>
+                        <td class="course-instructor">Nancy Tennant</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.3</td>
+                        <td class="composite-score">4.90</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">3</td>
+                        <td>
+                            <div class="course-title">Leadership Studio</div>
+                        </td>
+                        <td class="course-id">31403 81</td>
+                        <td class="course-instructor">Harry L Davis</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">5.2</td>
+                        <td class="composite-score">4.81</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">4</td>
+                        <td>
+                            <div class="course-title">Diversity in Organizations</div>
+                        </td>
+                        <td class="course-id">38122 81</td>
+                        <td class="course-instructor">Jane Risen</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">3.2</td>
+                        <td class="composite-score">4.80</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">5</td>
+                        <td>
+                            <div class="course-title">Leadership Studio</div>
+                        </td>
+                        <td class="course-id">31403 81</td>
+                        <td class="course-instructor">Nancy Tennant</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">5.2</td>
+                        <td class="composite-score">4.78</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">6</td>
+                        <td>
+                            <div class="course-title">Managing in Organizations</div>
+                        </td>
+                        <td class="course-id">38001 85</td>
+                        <td class="course-instructor">Ed O'brien</td>
+                        <td class="course-term">Summer 2024</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">3.3</td>
+                        <td class="composite-score">4.62</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">7</td>
+                        <td>
+                            <div class="course-title">Leadership Studio</div>
+                        </td>
+                        <td class="course-id">31403 81</td>
+                        <td class="course-instructor">Harry L Davis</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">3.7</td>
+                        <td class="composite-score">4.53</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">8</td>
+                        <td>
+                            <div class="course-title">Leadership Studio</div>
+                        </td>
+                        <td class="course-id">31403 81</td>
+                        <td class="course-instructor">Nancy Tennant</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">3.7</td>
+                        <td class="composite-score">4.53</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">9</td>
+                        <td>
+                            <div class="course-title">Managing the Workplace</div>
+                        </td>
+                        <td class="course-id">33032 85</td>
+                        <td class="course-instructor">Canice Prendergast</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">3.2</td>
+                        <td class="composite-score">4.53</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">10</td>
+                        <td>
+                            <div class="course-title">Managing in Organizations</div>
+                        </td>
+                        <td class="course-id">38001 81</td>
+                        <td class="course-instructor">Ed O'brien</td>
+                        <td class="course-term">Summer 2024</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">3.9</td>
+                        <td class="composite-score">4.52</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">11</td>
+                        <td>
+                            <div class="course-title">Managing the Workplace</div>
+                        </td>
+                        <td class="course-id">33032 01</td>
+                        <td class="course-instructor">Canice Prendergast</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">3.0</td>
+                        <td class="composite-score">4.50</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">12</td>
+                        <td>
+                            <div class="course-title">Diversity in Organizations</div>
+                        </td>
+                        <td class="course-id">38122 85</td>
+                        <td class="course-instructor">Jane Risen</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">3.8</td>
+                        <td class="composite-score">4.49</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">13</td>
+                        <td>
+                            <div class="course-title">Leadership Studio</div>
+                        </td>
+                        <td class="course-id">31403 81</td>
+                        <td class="course-instructor">Harry L Davis</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.46</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">14</td>
+                        <td>
+                            <div class="course-title">Leadership Studio</div>
+                        </td>
+                        <td class="course-id">31403 81</td>
+                        <td class="course-instructor">Nancy Tennant</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.42</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">15</td>
+                        <td>
+                            <div class="course-title">Managing the Workplace</div>
+                        </td>
+                        <td class="course-id">33032 02</td>
+                        <td class="course-instructor">Canice Prendergast</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">3.0</td>
+                        <td class="composite-score">4.41</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🏆 Strategy Top 15 Rankings</h2>
+            <div class="table-wrapper">
+                <table class="rankings-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Course Title</th>
+                        <th>Course ID</th>
+                        <th>Instructor</th>
+                        <th>Term</th>
+                        <th>Overall</th>
+                        <th>Recommend</th>
+                        <th>Clarity</th>
+                        <th>Interest</th>
+                        <th>Useful</th>
+                        <th>Hours</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="rank">1</td>
+                        <td>
+                            <div class="course-title">Competitive Strategy</div>
+                        </td>
+                        <td class="course-id">42001 03</td>
+                        <td class="course-instructor">Milena Almagro Garcia</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">2.7</td>
+                        <td class="composite-score">4.94</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">2</td>
+                        <td>
+                            <div class="course-title">Strategy Simulation: Creating Value in Complex and Ambiguous Settings</div>
+                        </td>
+                        <td class="course-id">42715 01</td>
+                        <td class="course-instructor">Kathleen Fitzgerald</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.79</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">3</td>
+                        <td>
+                            <div class="course-title">Strategy Simulation: Creating Value in Complex and Ambiguous Settings</div>
+                        </td>
+                        <td class="course-id">42715 01</td>
+                        <td class="course-instructor">Kathleen Fitzgerald</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.79</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">4</td>
+                        <td>
+                            <div class="course-title">Competitive Strategy</div>
+                        </td>
+                        <td class="course-id">42001 02</td>
+                        <td class="course-instructor">Thomas Wollmann</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">3.5</td>
+                        <td class="composite-score">4.74</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">5</td>
+                        <td>
+                            <div class="course-title">Competitive Strategy</div>
+                        </td>
+                        <td class="course-id">42001 81</td>
+                        <td class="course-instructor">Thomas Wollmann</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">5.0/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">3.6</td>
+                        <td class="composite-score">4.70</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">6</td>
+                        <td>
+                            <div class="course-title">Competitive Strategy</div>
+                        </td>
+                        <td class="course-id">42001 01</td>
+                        <td class="course-instructor">Thomas Wollmann</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.3</td>
+                        <td class="composite-score">4.58</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">7</td>
+                        <td>
+                            <div class="course-title">Competitive Strategy</div>
+                        </td>
+                        <td class="course-id">42800 93</td>
+                        <td class="course-instructor">Luis Garicano Gabilondo</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">11.3</td>
+                        <td class="composite-score">4.54</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">8</td>
+                        <td>
+                            <div class="course-title">Technology Strategy</div>
+                        </td>
+                        <td class="course-id">39101 85</td>
+                        <td class="course-instructor">Marc James Knez</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.2</td>
+                        <td class="composite-score">4.53</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">9</td>
+                        <td>
+                            <div class="course-title">Competitive Strategy</div>
+                        </td>
+                        <td class="course-id">42001 02</td>
+                        <td class="course-instructor">Anders Humlum</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">2.6</td>
+                        <td class="composite-score">4.53</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">10</td>
+                        <td>
+                            <div class="course-title">Strategy Simulation: Creating Value in Complex and Ambiguous Settings</div>
+                        </td>
+                        <td class="course-id">42715 85</td>
+                        <td class="course-instructor">Kathleen Fitzgerald</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.51</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">11</td>
+                        <td>
+                            <div class="course-title">Game Theory</div>
+                        </td>
+                        <td class="course-id">42116 01</td>
+                        <td class="course-instructor">Emir Kamenica</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.3</td>
+                        <td class="composite-score">4.50</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">12</td>
+                        <td>
+                            <div class="course-title">Strategy Simulation: Creating Value in Complex and Ambiguous Settings</div>
+                        </td>
+                        <td class="course-id">42715 01</td>
+                        <td class="course-instructor">Kathleen Fitzgerald</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">3.6</td>
+                        <td class="composite-score">4.42</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">13</td>
+                        <td>
+                            <div class="course-title">Competitive Strategy</div>
+                        </td>
+                        <td class="course-id">42001 04</td>
+                        <td class="course-instructor">Kathleen Fitzgerald</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.0</td>
+                        <td class="composite-score">4.40</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">14</td>
+                        <td>
+                            <div class="course-title">Competitive Strategy</div>
+                        </td>
+                        <td class="course-id">42001 81</td>
+                        <td class="course-instructor">Thomas Covert</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">5.0</td>
+                        <td class="composite-score">4.39</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">15</td>
+                        <td>
+                            <div class="course-title">Competitive Strategy</div>
+                        </td>
+                        <td class="course-id">42001 01</td>
+                        <td class="course-instructor">Anders Humlum</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">3.4</td>
+                        <td class="composite-score">4.30</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🏆 Economy Top 15 Rankings</h2>
+            <div class="table-wrapper">
+                <table class="rankings-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Course Title</th>
+                        <th>Course ID</th>
+                        <th>Instructor</th>
+                        <th>Term</th>
+                        <th>Overall</th>
+                        <th>Recommend</th>
+                        <th>Clarity</th>
+                        <th>Interest</th>
+                        <th>Useful</th>
+                        <th>Hours</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="rank">1</td>
+                        <td>
+                            <div class="course-title">International Financial Policy</div>
+                        </td>
+                        <td class="course-id">33502 01</td>
+                        <td class="course-instructor">Rohan Kekre</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">3.6</td>
+                        <td class="composite-score">4.70</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">2</td>
+                        <td>
+                            <div class="course-title">Macroeconomics and the Business Environment</div>
+                        </td>
+                        <td class="course-id">33050 01</td>
+                        <td class="course-instructor">Erik G Hurst</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.9/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">5.9</td>
+                        <td class="composite-score">4.66</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">3</td>
+                        <td>
+                            <div class="course-title">International Financial Policy</div>
+                        </td>
+                        <td class="course-id">33502 81</td>
+                        <td class="course-instructor">Rohan Kekre</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.64</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">4</td>
+                        <td>
+                            <div class="course-title">International Financial Policy</div>
+                        </td>
+                        <td class="course-id">33502 81</td>
+                        <td class="course-instructor">Rohan Kekre</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">3.9</td>
+                        <td class="composite-score">4.61</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">5</td>
+                        <td>
+                            <div class="course-title">Macroeconomics and the Business Environment</div>
+                        </td>
+                        <td class="course-id">33050 81</td>
+                        <td class="course-instructor">Joseph Vavra</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">3.9</td>
+                        <td class="composite-score">4.54</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">6</td>
+                        <td>
+                            <div class="course-title">International Financial Policy</div>
+                        </td>
+                        <td class="course-id">33502 02</td>
+                        <td class="course-instructor">Rohan Kekre</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.52</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">7</td>
+                        <td>
+                            <div class="course-title">Money and Banking</div>
+                        </td>
+                        <td class="course-id">33401 81</td>
+                        <td class="course-instructor">Randall S Kroszner</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.2</td>
+                        <td class="composite-score">4.52</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">8</td>
+                        <td>
+                            <div class="course-title">International Financial Policy</div>
+                        </td>
+                        <td class="course-id">33502 01</td>
+                        <td class="course-instructor">Rohan Kekre</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.2</td>
+                        <td class="composite-score">4.50</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">9</td>
+                        <td>
+                            <div class="course-title">Money and Banking</div>
+                        </td>
+                        <td class="course-id">33401 81</td>
+                        <td class="course-instructor">Randall S Kroszner</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">6.1</td>
+                        <td class="composite-score">4.46</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">10</td>
+                        <td>
+                            <div class="course-title">Money and Banking</div>
+                        </td>
+                        <td class="course-id">33401 01</td>
+                        <td class="course-instructor">Kilian Huber</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">3.8</td>
+                        <td class="composite-score">4.43</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">11</td>
+                        <td>
+                            <div class="course-title">Macroeconomics and the Business Environment</div>
+                        </td>
+                        <td class="course-id">33050 01</td>
+                        <td class="course-instructor">Joseph Vavra</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.1/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.27</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">12</td>
+                        <td>
+                            <div class="course-title">Macroeconomics and the Business Environment</div>
+                        </td>
+                        <td class="course-id">33050 02</td>
+                        <td class="course-instructor">Joseph Vavra</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.1/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.8</td>
+                        <td class="composite-score">4.25</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">13</td>
+                        <td>
+                            <div class="course-title">The Wealth of Nations</div>
+                        </td>
+                        <td class="course-id">33520 85</td>
+                        <td class="course-instructor">Chang-Tai Hsieh</td>
+                        <td class="course-term">Autumn 2024</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.1/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.21</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">14</td>
+                        <td>
+                            <div class="course-title">Money and Banking</div>
+                        </td>
+                        <td class="course-id">33401 01</td>
+                        <td class="course-instructor">Randall S Kroszner</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.1/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.0/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5</td>
+                        <td class="composite-score">4.21</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">15</td>
+                        <td>
+                            <div class="course-title">Money and Banking</div>
+                        </td>
+                        <td class="course-id">33401 01</td>
+                        <td class="course-instructor">Randall S Kroszner</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">5.2</td>
+                        <td class="composite-score">4.21</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🏆 Society Top 15 Rankings</h2>
+            <div class="table-wrapper">
+                <table class="rankings-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Course Title</th>
+                        <th>Course ID</th>
+                        <th>Instructor</th>
+                        <th>Term</th>
+                        <th>Overall</th>
+                        <th>Recommend</th>
+                        <th>Clarity</th>
+                        <th>Interest</th>
+                        <th>Useful</th>
+                        <th>Hours</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="rank">1</td>
+                        <td>
+                            <div class="course-title">Perspectives on Capitalism</div>
+                        </td>
+                        <td class="course-id">33250 81</td>
+                        <td class="course-instructor">Robert H Gertner</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.3</td>
+                        <td class="composite-score">4.70</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">2</td>
+                        <td>
+                            <div class="course-title">Business, Politics, and Ethics</div>
+                        </td>
+                        <td class="course-id">33471 85</td>
+                        <td class="course-instructor">Brian Barry</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.8/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.66</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">3</td>
+                        <td>
+                            <div class="course-title">The Firm and the Non-Market Environment</div>
+                        </td>
+                        <td class="course-id">33305 01</td>
+                        <td class="course-instructor">Marianne Bertrand</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">3.8</td>
+                        <td class="composite-score">4.59</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">4</td>
+                        <td>
+                            <div class="course-title">Perspectives on Capitalism</div>
+                        </td>
+                        <td class="course-id">33250 81</td>
+                        <td class="course-instructor">Robert H Gertner</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">8.5</td>
+                        <td class="composite-score">4.58</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">5</td>
+                        <td>
+                            <div class="course-title">The Firm and the Non-Market Environment</div>
+                        </td>
+                        <td class="course-id">33305 02</td>
+                        <td class="course-instructor">Marianne Bertrand</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.7</td>
+                        <td class="composite-score">4.57</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">6</td>
+                        <td>
+                            <div class="course-title">Designing a Good Life</div>
+                        </td>
+                        <td class="course-id">38119 02</td>
+                        <td class="course-instructor">Nicholas Epley</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">3.9</td>
+                        <td class="composite-score">4.47</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">7</td>
+                        <td>
+                            <div class="course-title">Business, Politics, and Ethics</div>
+                        </td>
+                        <td class="course-id">33471 03</td>
+                        <td class="course-instructor">Brian Barry</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.3</td>
+                        <td class="composite-score">4.43</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">8</td>
+                        <td>
+                            <div class="course-title">The Firm and the Non-Market Environment</div>
+                        </td>
+                        <td class="course-id">33305 85</td>
+                        <td class="course-instructor">Marianne Bertrand</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">5.5</td>
+                        <td class="composite-score">4.42</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">9</td>
+                        <td>
+                            <div class="course-title">Business, Politics, and Ethics</div>
+                        </td>
+                        <td class="course-id">33471 81</td>
+                        <td class="course-instructor">Brian Barry</td>
+                        <td class="course-term">Winter 2024</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.9</td>
+                        <td class="composite-score">4.41</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">10</td>
+                        <td>
+                            <div class="course-title">Designing a Good Life</div>
+                        </td>
+                        <td class="course-id">38119 81</td>
+                        <td class="course-instructor">Nicholas Epley</td>
+                        <td class="course-term">Winter 2025</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.7/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">3.4</td>
+                        <td class="composite-score">4.41</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">11</td>
+                        <td>
+                            <div class="course-title">Perspectives on Capitalism</div>
+                        </td>
+                        <td class="course-id">33250 01</td>
+                        <td class="course-instructor">Robert H Gertner</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">6.5</td>
+                        <td class="composite-score">4.39</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">12</td>
+                        <td>
+                            <div class="course-title">The Firm and the Non-Market Environment</div>
+                        </td>
+                        <td class="course-id">33305 01</td>
+                        <td class="course-instructor">Marianne Bertrand</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.38</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">13</td>
+                        <td>
+                            <div class="course-title">The Firm and the Non-Market Environment</div>
+                        </td>
+                        <td class="course-id">33305 02</td>
+                        <td class="course-instructor">Marianne Bertrand</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.4</td>
+                        <td class="composite-score">4.35</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">14</td>
+                        <td>
+                            <div class="course-title">The Firm and the Non-Market Environment</div>
+                        </td>
+                        <td class="course-id">33305 81</td>
+                        <td class="course-instructor">Marianne Bertrand</td>
+                        <td class="course-term">Spring 2024</td>
+                        <td class="metric-value">4.2/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.6/5</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.7</td>
+                        <td class="composite-score">4.34</td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">15</td>
+                        <td>
+                            <div class="course-title">Perspectives on Capitalism</div>
+                        </td>
+                        <td class="course-id">33250 01</td>
+                        <td class="course-instructor">Robert H Gertner</td>
+                        <td class="course-term">Spring 2025</td>
+                        <td class="metric-value">4.4/5</td>
+                        <td class="metric-value">4.5/5</td>
+                        <td class="metric-value">4.1/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.3/5</td>
+                        <td class="metric-value">4.5</td>
+                        <td class="composite-score">4.34</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Generated on August 24, 2025 at 12:19 PM</p>
+            <p>Based on student evaluations from the most recent 2 years</p>
+        </div>
+    </div>
+</body>
+</html>
