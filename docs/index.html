@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLMBE Course Rankings - Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+            color: #2F4F4F;
+            line-height: 1.6;
+            font-size: 14px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            border: 3px solid #8B4513;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(139, 69, 19, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            color: #FFF;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #FFF;
+            opacity: 0.9;
+        }
+
+        .love-header {
+            background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #B8860B 100%);
+            border: 4px solid #8B4513;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 12px 24px rgba(139, 69, 19, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .love-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="40" fill="rgba(255,255,255,0.4)">❤</text></svg>') repeat;
+            opacity: 0.6;
+        }
+
+        .love-text {
+            font-family: 'Brush Script MT', 'Lucida Handwriting', cursive;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #8B4513;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 2px;
+        }
+
+        .love-subtitle {
+            font-family: 'Georgia', serif;
+            font-size: 1.1rem;
+            color: #8B4513;
+            margin-top: 10px;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+
+        .navigation-section {
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #8B4513;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 16px rgba(139, 69, 19, 0.2);
+        }
+
+        .navigation-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            border-bottom: 3px solid #FF6B35;
+            padding-bottom: 10px;
+            color: #8B4513;
+            text-align: center;
+        }
+
+        .nav-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .nav-card {
+            background: linear-gradient(135deg, #FFE4B5 0%, #F5DEB3 100%);
+            border: 2px solid #D2691E;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(210, 105, 30, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(210, 105, 30, 0.3);
+        }
+
+        .nav-card h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #8B4513;
+            text-transform: uppercase;
+        }
+
+        .nav-card p {
+            color: #2F4F4F;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            border: 3px solid #8B4513;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 30px;
+            color: white;
+            box-shadow: 0 8px 16px rgba(139, 69, 19, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .nav-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .love-text {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>FLMBE Course Rankings</h1>
+            <p>Booth School of Business Course Evaluation Rankings</p>
+        </div>
+        
+        <!-- Love Declaration Header -->
+        <div class="love-header">
+            <p class="love-text">By using this you acknowledge you LOVE Arman Tajback</p>
+            <p class="love-subtitle">With deepest affection and eternal devotion</p>
+        </div>
+        
+        <!-- Navigation Section -->
+        <div class="navigation-section">
+            <h2 class="navigation-title">📚 Choose Your Data Set</h2>
+            <div class="nav-cards">
+                <div class="nav-card">
+                    <h3>Recent Course Data</h3>
+                    <p>View rankings based on student evaluations from the most recent 2 years (2024-2025). This provides the most current insights into course performance and student satisfaction.</p>
+                    <a href="recent.html" class="nav-button">View Recent Rankings</a>
+                </div>
+                
+                <div class="nav-card">
+                    <h3>All Course Data</h3>
+                    <p>View comprehensive rankings based on ALL student evaluations from the complete dataset. This gives you the full historical perspective on course performance.</p>
+                    <a href="all.html" class="nav-button">View All Rankings</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Generated on August 24, 2025 at 12:32 PM</p>
+            <p>Booth School of Business Course Rankings</p>
+        </div>
+    </div>
+</body>
+</html>
